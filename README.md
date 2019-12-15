@@ -141,6 +141,8 @@ def createCon():
 - Teh S3 Bucketeers https://github.com/tomdev/teh_s3_bucketeers
 - Lazys3 https://github.com/nahamsec/lazys3
 - AWSBucketDump https://github.com/jordanpotti/AWSBucketDump
+- s3-Inspector https://github.com/kromtech/s3-inspector
+- Zeus https://github.com/DenizParlak/Zeus
 
 ##### OSINT 
 - Datasploit https://github.com/DataSploit/datasploit
@@ -148,13 +150,16 @@ def createCon():
 - pwndb https://github.com/davidtavarez/pwndb/
 - LinkedInt https://github.com/vysecurity/LinkedInt
 - CrossLinked https://github.com/m8r0wn/CrossLinked
+
 ##### Github
 - unfurl https://github.com/probot/unfurl
 - truffleHog https://github.com/dxa4481/truffleHog
+- https://github.com/techgaun/github-dorks
 
 
 
 ### Usefull:
+- Bucket S3 S3-Inspector https://securityonline.info/s3-inspector-check-aws-s3-bucket-permissions/
 - https://github.com/infosecn1nja/Red-Teaming-Toolkit#reconnaissance
 - https://pentester.land/conference-notes/2018/07/25/bug-bounty-talks-2017-automation-for-bug-hunters.html
 - https://developer.shodan.io/api

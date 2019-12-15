@@ -369,9 +369,9 @@ def countThreads():
   while numT > 2 :
     numT = threading.active_count()
     if last_numT != numT:
-      print("[*] Left {} threads to finish, please wait...".format(numT-2))
+      print("[*] {} threads left, please wait...".format(numT-2))
     last_numT=numT
-    time.sleep(5)
+    time.sleep(3)
 
 ### Profiles
 def passive_recon():
@@ -456,4 +456,3 @@ for tgt in targets:
   # Cleaning
   scanned=[]
   allTargets=[]
- # report_maker.relatedDomains(domain)

@@ -63,6 +63,10 @@ def genWordlist(prekeyword):
       for word in words:
         if word not in wordlist:
           wordlist.append(word)
+          #CLear again the fucking list 
+    for bad in badWords:
+      if bad in wordlist:
+        wordlist.remove(bad)
 
 def awsSearchFor(domainName,key):
   global buckets
@@ -74,3 +78,4 @@ def awsSearchFor(domainName,key):
   for keyword in wordlist:
     searchGo(domainName,keyword,key)
   return buckets
+
