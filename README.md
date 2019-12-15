@@ -7,7 +7,7 @@ someday far way i will write a pretty cool readme, but not today guys
 
 
 ## How it works?
-
+I draw someshit here, it is outdated anyway, i will update after I finish some code stuff
 ![pipeline](docs/fluxogram.jpeg)
 
 ### Python3 Requirement 
