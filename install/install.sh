@@ -1,6 +1,6 @@
 #!/bin/bash
 function basic_packages(){
-  apt-get install git pip -y
+  apt-get install git pip pwgen -y
 }
 function configure_database(){
   apt-get update -y
@@ -8,7 +8,7 @@ function configure_database(){
   systemctl start mariadb-server
   systemctl enable mariadb-server
   # mysql_secure_installation
-  ./database/build_db.sh
+  ./database/build_db.sh database/databasev1.sql
 }
 
 function requirementsPython(){

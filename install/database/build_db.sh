@@ -22,3 +22,4 @@ if [ $(id -u) -eq 0 ];then
 else
 	echo "[!!] Error: You need to run with root user"
 fi
+

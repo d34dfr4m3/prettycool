@@ -107,6 +107,7 @@ def createCon():
 - https://github.com/tomnomnom/waybackurls 
 
 ### Maybe put in the project
+- honeypot checker from shodan
 
 ##### Footprint DNS IP / Network
 - Virtual host scanner https://github.com/jobertabma/virtual-host-discovery
