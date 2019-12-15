@@ -1,3 +1,12 @@
+   +-----------------------------------------------------------------------------+
+   |  [!] Legal disclaimer: Usage of this shit program for attacking targets     |
+   |  without prior mutual consent is illegal.                                   |
+   |  It is the end user's responsibility to obey all applicable local, state and|
+   |  federal laws.                                                              |
+   |  Developers assume no liability and are not responsible for any misuse or   |
+   |  damage caused by this program                                              |
+   +-----------------------------------------------------------------------------+
+
 ## Passive Recon Tool 
 This tool use few API's to grab data from domains.
 Passive scan
@@ -105,6 +114,9 @@ def createCon():
 - Github Search 
 - Adotar https://ipinfo.io/
 - Adotar print das páginas ScreenShot https://github.com/maaaaz/webscreenshot
+- Configurar daemon para rotinas periodicas. 
+- Possibilidade de definir escopo restritivo
+- colocar um fucking menu e opções nessa caralha, por exemplo, se quiser só dumpar os dados do banco de um determinado host, ou só recon passivo(redteam profile) ou recon ativo(bugbounty profile) 
 
 
 ##### WayBackMachine 
