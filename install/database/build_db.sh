@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x 
 DB='db_data'
-FILE='../db_creds'
+FILE='../keys/db_creds'
 if [ $(id -u) -eq 0 ];then
   db_version=`echo  'select version();' | mysql -u root  | tail -n1 `
 

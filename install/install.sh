@@ -12,7 +12,7 @@ function configure_database(){
 }
 
 function requirementsPython(){
-  pip install -r requirements.txt
+  pip3 install -r requirements.txt
 }
 
 function installMasscan(){

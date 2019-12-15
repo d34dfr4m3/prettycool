@@ -23,11 +23,12 @@ I draw someshit here, it is outdated anyway, i will update after I finish some c
 
 ### Required Programns
 - masscan
+- mariadb-server 10.3.20-MariaDB
 
 
 ### Instalation: 
 ```
-git clone 
+git clone https://github.com/d34dfr4m3/prettycool.git
 cd prettyCool/install
 sudo ./install.sh #and pray a while
 ```

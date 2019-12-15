@@ -1,9 +1,3 @@
 PyMySQL
 shodan
-json
-threading
-os
-time
-requests
-BeautifulSoup
-subprocess
+BeautifulSoup4

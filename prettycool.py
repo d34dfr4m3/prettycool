@@ -164,6 +164,7 @@ def banner():
 |_|                     |___/                    
           
                    - RedTeam/BugBounty Recon Tool! 
+       https://github.com/d34dfr4m3/prettycool/
 """)
 
 def censys_api(ipAddress,hostName): 
