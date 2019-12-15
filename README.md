@@ -1,3 +1,4 @@
+```
    +-----------------------------------------------------------------------------+
    |  [!] Legal disclaimer: Usage of this shit program for attacking targets     |
    |  without prior mutual consent is illegal.                                   |
@@ -6,7 +7,7 @@
    |  Developers assume no liability and are not responsible for any misuse or   |
    |  damage caused by this program                                              |
    +-----------------------------------------------------------------------------+
-
+```
 ## Passive Recon Tool 
 This tool use few API's to grab data from domains.
 Passive scan

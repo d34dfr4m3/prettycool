@@ -120,10 +120,10 @@ def shodan(target,hostname):
         banner = 'Not Found'
 
       try:
-        os=payload['data'][i]['os']
+        ops=payload['data'][i]['os']
       except Exception as error:
-        os = 'Not Found'
-    print('\t[+] Open Port: {} Product: {} Banner: {} OS: {}'.format(port,product,banner,os))
+        ops = 'Not Found'
+    print('\t[+] Open Port: {} Product: {} Banner: {} OS: {}'.format(port,product,banner,ops))
     db_controler.portAdd(target,port,hostname)
 
   except Exception as err:
