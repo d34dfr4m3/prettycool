@@ -1,0 +1,128 @@
+Database: 
+db_data
+
+MariaDB [db_tool]> show tables;
++-----------------------------+
+| Tables_in_db_tool           |
++-----------------------------+
+| tb_application              |
+| tb_applicationPathsAndFiles |
+| tb_domain                   |
+| tb_dump                     |
+| tb_host                     |
+| tb_port                     |
+| tb_victim                   |
++-----------------------------+
+
+
+
+tb_domain: domainName, whois, createdAt
+tb_relatedDomains: mainDomain, domainName, whois, createdAt
+tb_host: ipAddress, domainName, hostName, geoLocation, ipOwner, createdAt
+tb_port: idPort, ipAddress, hostName, port, protocol, banner, createdAt
+tb_application: idPort,ApplicationName(Title?), url, createdAt. # For webApplications(?)
+tb_applicationPathsAndFiles: mimeType,uuidFile,extension,hreflFile, isPage, screenshotPath, idApplication -> Alimentar com waybackMachine.
+tb_pastebin:id_dump, domainName, URL, title, dateDump(Data de publicação), createdAt
+tb_aws: id_aws, domainName, url 
+tb_victim: uuidVictim,domainName,email,contact,createdAt,socialMedia
+
+
+CREATE TABLE  `db_data`.`tb_domain`(
+  `domainName` VARCHAR(256) NOT NULL UNIQUE,
+  `whois` JSON NULL,
+  `createdAt` DATETIME NOT NULL,
+  PRIMARY KEY (`domainName`));
+
+CREATE TABLE 'db_data'.'tb_relatedDomains'(
+  `mainDomain` VARCHAR(256) NOT NULL UNIQUE,
+  `domainName` VARCHAR(256) NOT NULL,
+  `whois` JSON NULL,
+  `createdAt` DATETIME NOT NULL,
+  PRIMARY KEY (`domainName`),
+  FOREIGN KEY (mainDomain) REFERENCES tb_domain(domainName) ON DELETE CASCADE
+); 
+
+
+tb_host: ipAddress, domainName, hostName, geoLocation, ipOwner, createdAt
+CREATE TABLE `db_data`.`tb_host` (
+  `ipAddress` VARCHAR(40) NOT NULL,
+  `domainName` VARCHAR(256) NOT NULL,
+  `hostName` Varchar(256) NOT NULL,
+  `geoLocation` JSON NULL,
+  `ipOwner` VARCHAR(256) NULL,
+  `createdAt` DATETIME NOT NULL,
+   PRIMARY KEY (`hostName`),
+   FOREIGN KEY (domainName) REFERENCES tb_domain(domainName) ON DELETE CASCADE);
+
+
+tb_port: idPort, ipAddress, hostName, port, protocol, banner, createdAt
+CREATE TABLE `tb_port` (
+  'idPort' int(7) AUTO INCREMENT,
+  `ipAddress` varchar(40) NOT NULL,
+  `port` int(11) NOT NULL,
+  `protocol` varchar(256) DEFAULT NULL,
+  `banner` blob DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `hostName` varchar(256) NOT NULL,
+   PRIMARY KEY `fk_ports_hosts1` (`hostName`),
+   FOREIGN KEY (hostName) REFERENCES tb_host(hostName) ON DELETE CASCADE);
+
+
+tb_application: idPort,ApplicationName(Title?), url, createdAt. # For webApplications(?)
+
+CREATE TABLE IF NOT EXISTS `db_data`.`tb_application` (
+  `idPort` VARCHAR(36) AUTO INCREMENT,
+  `applicationName` VARCHAR(256) NULL,
+  `url` VARCHAR(1024) NOT NULL,
+  `createdAt` DATETIME NOT NULL,
+  PRIMARY KEY (`url`),
+  FOREIGN KEY (`idPort`) REFERENCES tb_port(idPort) ON DELETE CASCADE
+);
+
+tb_applicationPathsAndFiles: mimeType,uuidFile,extension,hreflFile, isPage, screenshotPath, idApplication -> Alimentar com waybackMachine.
+CREATE TABLE IF NOT EXISTS `db_data`.`tb_applicationPathsAndFiles` (
+  'url' VARCHAR(1024) NOT NULL,
+  `mimeType` VARCHAR(64) NOT NULL,
+  `uuidFile` VARCHAR(36) NULL,
+  `extension` VARCHAR(8) NULL,
+  `hreflFile` VARCHAR(2048) NOT NULL,
+  `isPage` TINYINT NOT NULL,
+  `screenshotPath` VARCHAR(2120) NOT NULL,
+  `idApplication` VARCHAR(2048) NOT NULL,
+   PRIMARY KEY (`url`),
+   FOREIGN KEY (`url`) REFERENCES tb_application(url) ON DELETE CASCADE
+);
+
+
+tb_pastebin:id_dump, domainName, URL, title, dateDump(Data de publicação), createdAt
+CREATE TABLE IF NOT EXISTS `db_data`.`tb_pastebin` (
+  `uuidDump` VARCHAR(36) ,
+  `domainName` VARCHAR(256) NOT NULL,
+  `url` VARCHAR(2048) NULL,
+  `title` VARCHAR(2048) NOT NULL,
+   'dumpDate' varchar(12) NULL, 
+  `createdAt` DATETIME NOT NULL,
+   PRIMARY KEY (`uuidDump`),
+   FOREIGN KEY (domainName) REFERENCES tb_domain(domainName) ON DELETE CASCADE);
+   
+tb_aws: id_aws, domainName, url
+CREATE TABLE IF NOT EXISTS `db_data`.`tb_aws` (
+  `uuidDump` VARCHAR(36) ,
+  `domainName` VARCHAR(256) NOT NULL,
+  `url` VARCHAR(2048) NULL,
+   'dumpDate' varchar(12) NULL, 
+  `createdAt` DATETIME NOT NULL,
+   PRIMARY KEY (`uuidDump`),
+   FOREIGN KEY (domainName) REFERENCES tb_domain(domainName) ON DELETE CASCADE);
+
+tb_victim: uuidVictim,domainName,email,contact,createdAt,socialMedia
+CREATE TABLE IF NOT EXISTS `db_data`.`tb_victim` (
+  `uuidVictim` VARCHAR(36) AUTO INCREMENT,
+  `domainName` VARCHAR(256) NOT NULL,
+  `email` VARCHAR(320) NULL,
+  `contact` JSON NULL,
+  `createdAt` DATETIME NOT NULL,
+  `socialMedia` JSON NULL,
+  PRIMARY KEY (`uuidVictim`),
+  FOREIGN KEY (domainName) REFERENCES tb_domain(domainName) ON DELETE CASCADE);
+
