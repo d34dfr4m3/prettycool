@@ -23,6 +23,7 @@ I draw someshit here, it is outdated anyway, i will update after I finish some c
 
 ### Required Programns
 - masscan
+- pwgen
 - mariadb-server 10.3.20-MariaDB
 
 
@@ -76,6 +77,9 @@ def createCon():
 
 ## ToDO
 - SANITIZAR TODOS OS INPUTS PRO BANCO DE DADOS, alguns valores estãop quebrando
+- Abusar de features do shodan
+- Abusar de features do censys rtfm
+- setar captura de banner no masscan
 - Criar uma tabela para os arquivos do bucket da AWS
 - Problema no censys refrente à identificar portas ativas no servidor de proxy reverso da aplicação caso esteja em um serviço tipo AWS. 
 - Refatorar o código. 
@@ -91,13 +95,12 @@ def createCon():
 - Substituir OS por subprocess.
 - Database deploy, verificação de dados se existem no banco de dados antes de pesquisar Dominios, IPS, implementar um timestamp dos dados, a partir de X tempoo o valor do banco expira e precisa ser scaneado novamente. 
 - Integrar com https://dns.bufferover.run/dns?q=domain_name
-- Integrar com https://dnsdumpster.com
+- Integrar com https://dnsdumpster.com -> Problemas com token CSRF  403 of insanity motherfckr
 - randomizar useragent
 - Colocar função global de http status code 
 - Pesquisar no grayhatwarfare por nomes em arquivos.
 - REPORT -> Separar hosts com IP e apenas enumerar hosts sem IP
 - Resultado do masscan não está sendo inserido no fucking banco de dados porra caralho.
-- Pastebin n adiciona, erro ->Pastebin error: (1062, "Duplicate entry 'glbimg.com' for key 'fk_dump_domain1_idx'") Fucking PK configurada errada, porra
 - Integrar com Amass(?)
 - Github Search 
 - Adotar https://ipinfo.io/

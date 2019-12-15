@@ -21,6 +21,8 @@ global shodan
 global sectrial
 global scanned
 global domain
+global CENSYS_DEAD
+CENSYS_DEAD=False
 scanned=[]
 allTargets=[]
 URLSPYSE='https://api.spyse.com/v1'
@@ -67,8 +69,9 @@ def healthCheck():
   elif left > 10:
     print("[!!] Censys API has only {} requests left".format(str(left)))
   elif left == 0:
-    global censys
-    censys = False
+    global CENSYS_DEAD
+    CENSYS_DEAD = True
+    # Pick up another key right guys! 
     print("[!!] Censys API has no credits to use")
   else:
     print("[!!] Censys API is ready to rock with {} requests left".format(left))
@@ -175,6 +178,7 @@ def censys_api(ipAddress,hostName):
   auth = requests.get(API_URL + "/data", auth=(censys_UID,censys_SECRET))
   if auth.status_code != 200:
       print("[+] Auth Error: ", auth.json()['error'])
+      CENSYS_DEAD=True
   else:
     params={'query':ipAddress, 'page':10}
     try: 
@@ -271,7 +275,9 @@ def process(host):
     if hostScanControl(ipAddress):
       shodan(ipAddress,host)
       spyse_ip(ipAddress,host)
-      censys_api(ipAddress,host)
+      if not CENSYS_DEAD:
+        censys_api(ipAddress,host)
+
       runMasscan(host,ipAddress)
     
   else:
