@@ -5,6 +5,11 @@ Active scan
 Search for relative data in AWS and Pastebin
 someday far way i will write a pretty cool readme, but not today guys
 
+
+## How it works?
+
+![pipeline](docs/fluxogram.jpeg)
+
 ### Python3 Requirement 
 - PyMySQL
 - shodan
