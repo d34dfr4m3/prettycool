@@ -16,6 +16,8 @@ if [ $(id -u) -eq 0 ];then
   echo "[+] Creating user"
   echo "create user 'prettycool'@'localhost' IDENTIFIED BY '$password';"| mysql -u root 
   echo "[+] User:prettycool\n Password:$password" >> $FILE
+  sed -i  "s/FRESHINSTALL/$password/g" ../../tools/db_controler.py
+  sed -i  "s/FRESHINSTALL/$password/g" ../../tools/report_maker.py
   echo "[-] Credentials saved at $FILE"
   echo "[+] Granting Privileges"
   echo "grant all privileges ON $DB.* to 'prettycool'@'localhost';" | mysql -u root

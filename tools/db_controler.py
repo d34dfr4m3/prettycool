@@ -3,7 +3,7 @@ import pymysql.cursors
 def createCon():
   connection = pymysql.connect(host='localhost',
                              user='prettycool',
-                             password='',
+                             password='FRESHINSTALL',
                              db='db_data',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
