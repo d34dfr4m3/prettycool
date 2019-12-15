@@ -14,6 +14,7 @@ from tools import db_controler
 from tools import report_maker
 from tools import awsSearch
 from tools import spyse
+from tools import dnsbuffer
 #from tools import wayback
 
 global censys 
@@ -405,6 +406,13 @@ for tgt in targets:
   virustotal(tgt)
   crtsh(tgt)
   certspotter(tgt)
+  ## dnsbuffer retorna com endereços IPv4, melhor ao inves de usar listas, consumir direto do banco
+  dnsbuffer_hosts=dnsbuffer.getHosts(tgt)
+  for dnsbuffer_host in dnsbuffer_hosts:
+    ipAddress=dnsbuffer_hosts[dnsbuffer_host]
+    avoidDuplicata(dnsbuffer_host)
+    db_controler.hostAdd(ipAddress,tgt,dnsbuffer_host)
+
   sorted(set(allTargets))
   print("[*] Found {} hosts for {}".format(str(len(allTargets)),tgt))
    ## Recon Passivo Fingerprint
