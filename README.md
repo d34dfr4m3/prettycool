@@ -30,6 +30,7 @@ I draw someshit here, it is outdated anyway, i will update after I finish some c
 - requests
 - BeautifulSoup
 - subprocess
+- getopt
 
 ### Required Programns
 - masscan

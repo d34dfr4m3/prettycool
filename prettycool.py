@@ -1,6 +1,7 @@
 #!/usr/bin/python3 
 import requests
 from bs4 import BeautifulSoup
+import getopt
 import socket
 import shodan
 import sys
@@ -371,6 +372,27 @@ def countThreads():
       print("[*] Left {} threads to finish, please wait...".format(numT-2))
     last_numT=numT
     time.sleep(5)
+
+### Profiles
+def passive_recon():
+   # Pastebin Search
+  pasteFounded=pastebin(tgt)
+  ### Recon Passivo Footprint
+  spyse_subdomains(tgt)
+  securitytrails(tgt)
+  virustotal(tgt)
+  crtsh(tgt)
+  certspotter(tgt)
+  ## dnsbuffer retorna com endereços IPv4, melhor ao inves de usar listas, consumir direto do banco
+  dnsbuffer_hosts=dnsbuffer.getHosts(tgt)
+  for dnsbuffer_host in dnsbuffer_hosts:
+    ipAddress=dnsbuffer_hosts[dnsbuffer_host]
+    avoidDuplicata(dnsbuffer_host)
+    db_controler.hostAdd(ipAddress,tgt,dnsbuffer_host)
+
+def active_recon():
+  global AGRESSIVE
+  AGRESSIVE = True
 
 ### MAIN #### 
 banner()

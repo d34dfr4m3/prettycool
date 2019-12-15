@@ -10,6 +10,6 @@ def getHosts(domainName):
   hosts=data['FDNS_A']
   for host in range(len(hosts)):
     ip,hostname=hosts[host].split(',')
-    #print("[DNSBUFFER] ipAddress: %s Hostname: %s" %(ip,hostname))
+    print("[DNSBUFFER] ipAddress: %s Hostname: %s" %(ip,hostname))
     hosts_results[hostname]=ip
   return hosts_results
