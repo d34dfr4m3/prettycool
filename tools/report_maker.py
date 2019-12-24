@@ -25,15 +25,74 @@ def listDomains():
   result = execQuery(query)
   if result:
     for domain in range(len(result)):
-      print(result[domain]['domainName'])
+      domainName=result[domain]['domainName']
+      query="select count(hostName) as total from tb_host where domainName='{}';".format(domainName)
+      getNum = execQuery(query)
+      if getNum:
+        totalHosts=getNum[0]['total']
+        print("[!] Domain: %s \n\tHosts Found: %s" %(domainName,totalHosts))
   
 def hostOnly(hostname):
-  # Query all domains in the database; 
-  query = "select hostname,port from tb_port where hostname = '{}'; ".format(hostname)
+  # Query a unique hostname in the database; 
+  #query ="select tb_host.hostName,tb_host.ipAddress,tb_port.port, tb_port.protocol,tb_port.banner from tb_host inner join tb_port where tb_host.domainName='{}' and tb_port.ipAddress = tb_host.ipAddress order by 1;".format(domain)
+  query ="select hostName,ipAddress,isp,link,org,latitude,longitude,last_update,shodan_last_update from tb_host where domainName='{}' and ipAddress != 'False' order by 1;".format(domain)
   result = execQuery(query)
   if result:
-    for domain in range(len(result)):
-      print(result[domain]['domainName'])
+    for host in range(len(result)):
+      hostName=result[host]['hostName']
+      ipAddress=result[host]['ipAddress']
+      isp=result[host]['isp']
+      link=result[host]['link']
+      org=result[host]['org']
+      asn=result[host]['asn']
+      latitude=result[host]['latitude']
+      longitude=result[host]['longitude']
+      last_update=result[host]['last_update']
+      shodan_last_update=result[host]['shodan_last_update']
+
+      print("[=] Hostname: {} ipAddress: {} ISP: {} Organization: {}".format(hostName,ipAddress,isp,org))
+      print("\t\t[=] Link: {} ASN: {} Last Update: {}".format(link,asn,last_update))
+      print("\t\t[=] Latitude: {} Longitude: {} Last Shodan update: {}".format(latitude,longitude,shodan_last_update))
+      query ="select port,protocol,banner,service from tb_port where hostName='{}' and ipAddress='{}' order by 1;".format(hostName,ipAddress)
+      resultPorts = execQuery(query)
+      if resultPorts:
+        for port in range(len(resultPorts)):
+          protocol=resultPorts[port]['protocol']
+          rport=resultPorts[port]['port']
+          banner=resultPorts[port]['banner']
+          service=resultPorts[port]['service']
+          if banner.decode() == 'Null':
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} Banner: None ".format(rport,protocol,service))
+          else:
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} \n\t\t\t\tBanner: ".format(rport,protocol,service))
+            line=''
+            for w in banner.decode():
+              line+=''.join(w)
+              if w == '\n':
+                lineprint='\t\t\t\t\t'+line
+                print(lineprint.replace('\r','').replace('\n',''))
+                line=''
+
+      count+=1
+  else:
+    print("[+] {} Not found in database".format(domain))
+  print("[!] Found {} records in database".format(count))
+
+
+
+  query = "select ipAddress, port, banner, protocol from tb_port where hostName = '{}'; ".format(hostname)
+  result = execQuery(query)
+  if result:
+    print("[!] Hostname: %s" % hostname)
+    ipAddress=result[0]['ipAddress']
+    for records in range(len(result)):
+      port=result[records]['port']
+      protocol=result[records]['protocol']
+      banner=result[records]['banner']
+      print("\t\tPort: %s Protocol: %s \n\t\t\t\tBanner: %s" %(port,protocol,banner))
+  else:
+    print("No records Found")
+
 
 def hostsFromDomain(domain):
   count=0
@@ -50,13 +109,16 @@ def hostsFromDomain(domain):
   missing=totalHosts-totalValidHosts
   print("[-] For Domain {}  we have {} hostnames but only {}  has valid IPv4. Hosts missing IPv4: {}".format(domain,totalHosts,totalValidHosts,missing))
   #query ="select tb_host.hostName,tb_host.ipAddress,tb_port.port, tb_port.protocol,tb_port.banner from tb_host inner join tb_port where tb_host.domainName='{}' and tb_port.ipAddress = tb_host.ipAddress order by 1;".format(domain)
-  query ="select hostName,ipAddress from tb_host where domainName='{}' and ipAddress != 'False' order by 1;".format(domain)
+  #query="INSERT INTO tb_host(ipAddress,domainName, hostName, latitude, longitude, isp, os, org, asn, link, country_code, shodan_last_update, createdAt) VALUES ('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',{}',CURRENT_TIMESTAMP);".format(ipAddress,domainName,hostName,latitude,longitude,isp,os,asn,link,country_code,shodan_last_update)
+  query ="select hostName,ipAddress,isp,org from tb_host where domainName='{}' and ipAddress != 'False' order by 1;".format(domain)
   result = execQuery(query)
   if result:
     for host in range(len(result)):
-      ipAddress=result[host]['ipAddress']
       hostName=result[host]['hostName']
-      print("[=] Hostname: {} ipAddress: {}".format(hostName,ipAddress))
+      ipAddress=result[host]['ipAddress']
+      isp=result[host]['isp']
+      org=result[host]['org']
+      print("[=] Hostname: {} ipAddress: {} ISP: {} Organization: {}".format(hostName,ipAddress,isp,org))
       query ="select port,protocol,banner from tb_port where hostName = '{}' order by 1;".format(hostName)
       resultPorts = execQuery(query)
       if resultPorts:
@@ -130,12 +192,41 @@ def makeReport(domain):
   hostsFromDomain(domain)
   relatedDomains(domain)
 
+def usage():
+  print("""
+  report_maker <opt> <target>
+  OPT:
+  list-domains: Will list domains in the database
+  report: Will make a full report for a specified domain
+  buckets: Will list buckets from a specified domain
+  related-domains: Will list related domains from a specified domain 
+  hosts-from-domain: Will list all hosts from a domain
+  host: Will query only the specified host
+  usage: this shit
+  """)
+  exit(1)
+
 if __name__ == "__main__":
   import sys
-  domain_name = sys.argv[1]
-  makeReport(domain_name)
-  #hostsFromDomain(domain_name)
-  #buckets(domain_name)
-  #relatedDomains(domain_name)
-  #listDomains()
-  #hostOnly(domain_name)
+  if len(sys.argv) < 2:
+    usage()
+  if len(sys.argv) >=3:
+    domain_name = sys.argv[2]
+  if len(sys.argv) >=2:
+    opt=sys.argv[1]
+
+  if opt == 'list-domains':
+    listDomains()
+  elif opt=='report':
+    makeReport(domain_name)
+  elif opt=='buckets':
+    buckets(domain_name)
+  elif opt=='related-domains':
+    relatedDomains(domain_name)
+  elif opt=='hosts-from-domain':
+    hostsFromDomain(domain_name)
+  elif opt=='host':
+    hostOnly(domain_name)
+  else:
+    print("[!!] Invalid Option")
+

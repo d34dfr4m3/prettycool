@@ -16,8 +16,11 @@ def getHosts(domainName):
       return False
     for host in range(len(hosts)):
       ip,hostname=hosts[host].split(',')
-      print("[DNSBUFFER] ipAddress: %s Hostname: %s" %(ip,hostname))
-      hosts_results[hostname]=ip
+      check_domain_fqdn='.'+domainName
+      if hostname.endswith(check_domain_fqdn):
+        #Check if ip is a real IP, if not, resolve.
+        print("[+][DNSBUFFER] Hostname: %s ipAddress: %s" %(hostname,ip))
+        hosts_results[hostname]=ip
     return hosts_results
 
 if __name__ == "__main__":

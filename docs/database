@@ -43,7 +43,29 @@ CREATE TABLE 'db_data'.'tb_relatedDomains'(
 ); 
 
 
-tb_host: ipAddress, domainName, hostName, geoLocation, ipOwner, createdAt
+## tb_host
+MariaDB [db_data]> desc tb_host;
++--------------------+--------------+------+-----+---------+-------+
+| Field              | Type         | Null | Key | Default | Extra |
++--------------------+--------------+------+-----+---------+-------+
+| ipAddress          | varchar(40)  | NO   |     | NULL    |       |
+| domainName         | varchar(256) | NO   | MUL | NULL    |       |
+| hostName           | varchar(256) | NO   | PRI | NULL    |       |
+| geoLocation        | longtext     | YES  |     | NULL    |       |
+| ipOwner            | varchar(256) | YES  |     | NULL    |       |
+| createdAt          | datetime     | NO   |     | NULL    |       |
+| latitude           | varchar(256) | YES  |     | NULL    |       |
+| longitude          | varchar(256) | YES  |     | NULL    |       |
+| isp                | varchar(256) | YES  |     | NULL    |       |
+| os                 | varchar(256) | YES  |     | NULL    |       |
+| org                | varchar(256) | YES  |     | NULL    |       |
+| asn                | varchar(256) | YES  |     | NULL    |       |
+| link               | varchar(256) | YES  |     | NULL    |       |
+| country_code       | varchar(256) | YES  |     | NULL    |       |
+| shodan_last_update | varchar(256) | YES  |     | NULL    |       |
++--------------------+--------------+------+-----+---------+-------+
+
+
 CREATE TABLE `db_data`.`tb_host` (
   `ipAddress` VARCHAR(40) NOT NULL,
   `domainName` VARCHAR(256) NOT NULL,
@@ -51,8 +73,33 @@ CREATE TABLE `db_data`.`tb_host` (
   `geoLocation` JSON NULL,
   `ipOwner` VARCHAR(256) NULL,
   `createdAt` DATETIME NOT NULL,
+  `latitude`  VARCHAR(256) NULL,
+  `longitude` VARCHAR(256) NULL,
+  `isp` VARCHAR(256) NULL,
+  `os` VARCHAR(256) NULL,
+  `org` VARCHAR(256) NULL,
+  `asn` VARCHAR(256) NULL,
+  `link` VARCHAR(256) NULL,
+  `country_code` VARCHAR(256) NULL,
+
    PRIMARY KEY (`hostName`),
    FOREIGN KEY (domainName) REFERENCES tb_domain(domainName) ON DELETE CASCADE);
+
+### TB_PORT
+MariaDB [db_data]> desc tb_port;
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| idPort    | int(7)       | NO   | PRI | NULL    | auto_increment |
+| ipAddress | varchar(40)  | NO   |     | NULL    |                |
+| port      | int(11)      | NO   |     | NULL    |                |
+| protocol  | varchar(256) | YES  |     | NULL    |                |
+| banner    | blob         | YES  |     | NULL    |                |
+| createdAt | datetime     | NO   |     | NULL    |                |
+| hostName  | varchar(256) | NO   | MUL | NULL    |                |
+| service   | varchar(256) | YES  |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+8 rows in set (0.002 sec)
 
 
 tb_port: idPort, ipAddress, hostName, port, protocol, banner, createdAt

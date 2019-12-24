@@ -31,21 +31,23 @@ def spyse_ip(ip):
       port=data.json()[ips]['iplList'][ports]['port']
       banner=data.json()[ips]['iplList'][ports]['banner']
       protocol=data.json()[ips]['iplList'][ports]['protocol']['name']
-      print("\t[-] Port: {} Protocol: {} Banner: {}".format(port,protocol,banner.replace('\n','\n\t')))
+      print("\t[+] Port: {} Protocol: {} Banner: {}".format(port,protocol,banner.replace('\n','\n\t')))
 
 def spyse_related_domain(domain):
   domain_results=[]
   data = requests.get(URL+'/domains-on-ip?domain={}&page={}'.format(domain,'1'))
   if data.status_code in http_status_codes.keys():
     print('[!!] Error - {}'.format(http_status_codes))
-  for domains in range(len(data.json()['records'][0])):
-    related_domain = data.json()['records'][domains]['domain']
-    print("[!] Target domain has relation with {}".format(related_domain))
-    domain_results.append(related_domain)
-  return domain_results
+  else:
+    for domains in range(len(data.json()['records'])):
+      related_domain = data.json()['records'][domains]['domain']
+      print("[!] Target domain has relation with {}".format(related_domain))
+      domain_results.append(related_domain)
+    return domain_results
 
-#import sys
-#target=sys.argv[1]
-#spyse_subdomains(target)     
-#spyse_related_domain(target) 
-#spyse_ip(target)
+if __name__ == "__main__":
+  import sys
+  target=sys.argv[1]
+ # spyse_subdomains(target)     
+  spyse_related_domain(target) 
+ # spyse_ip(target)

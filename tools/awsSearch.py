@@ -52,17 +52,20 @@ def genWordlist(prekeyword):
         for char in chars:
           prework=char.join(words)
           if prework not in wordlist:
-            wordlist.append(prework)
+            if len(prework) >= 3: 
+              wordlist.append(prework)
       words.reverse()
       for i in range(len(words)):
         for char in chars:
           prework=char.join(words)
           if prework not in wordlist:
-            wordlist.append(prework)
+            if len(prework) >= 3: 
+              wordlist.append(prework)
   #- Start to cut and do isolate search
       for word in words:
         if word not in wordlist:
-          wordlist.append(word)
+            if len(word) >= 3: 
+              wordlist.append(word)
           #CLear again the fucking list 
     for bad in badWords:
       if bad in wordlist:

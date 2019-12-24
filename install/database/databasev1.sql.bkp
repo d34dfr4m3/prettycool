@@ -29,7 +29,7 @@ CREATE TABLE `db_data`.`tb_host` (
   `org` VARCHAR(256) NULL,
   `asn` VARCHAR(256) NULL,
   `link` VARCHAR(256) NULL, 
-  `last_update` DATETIME NULL,
+  `last_update` DATETIME NOT NULL,
   `country_code` VARCHAR(256) NULL,
   `shodan_last_update`  VARCHAR(256) NULL,
   `createdAt` DATETIME NOT NULL,
@@ -46,33 +46,31 @@ CREATE TABLE `db_data`.`tb_port` (
   `createdAt` datetime NOT NULL,
   `service` VARCHAR(256) NULL,
   `hostName` varchar(256) NOT NULL,
-  `last_update` DATETIME  NULL,
+  `last_update` DATETIME NOT NULL,
    PRIMARY KEY (`idPort`),
    FOREIGN KEY (hostName) REFERENCES tb_host(hostName) ON DELETE CASCADE);
 
 CREATE TABLE `db_data`.`tb_application` (
-  `idApp` int(6) AUTO_INCREMENT,
-  `service`VARCHAR(256) NULL,
-  `idPort` int(6) NOT NULL,
+  `idPort` int(6) AUTO_INCREMENT,
   `applicationName` VARCHAR(256) NULL,
   `url` VARCHAR(1024) NOT NULL,
   `createdAt` DATETIME NOT NULL,
-  PRIMARY KEY(`idApp`),
-  FOREIGN KEY (`idPort`) REFERENCES tb_port(idPort) ON DELETE CASCADE );
+  PRIMARY KEY(`idPort`),
+  FOREIGN KEY (`idPort`) REFERENCES tb_port(idPort) ON DELETE CASCADE
+);
 
-
-CREATE TABLE `db_data`.`tb_applicationContent` (
-  `idApplication` int(6) NOT NULL AUTO_INCREMENT,
-  `idApp` int(6) NOT NULL,
+CREATE TABLE `db_data`.`tb_applicationPathsAndFiles` (
+  `idPort` int(6) AUTO_INCREMENT,
   `url` VARCHAR(1024) NOT NULL,
-  `page_content` TEXT NULL,
-  `status_code` INT(3) NULL,
-  `sitemap_hash` VARCHAR(256) NULL,
-  `fileExtension` VARCHAR(256) NULL,
-  `screenshotPath` VARCHAR(2120) NULL,
-  `createdAt` DATETIME NOT NULL,
-   PRIMARY KEY (idApplication),
-   FOREIGN KEY (idApp) REFERENCES tb_application(idApp) ON DELETE CASCADE
+  `mimeType` VARCHAR(64) NOT NULL,
+  `uuidFile` VARCHAR(36) NULL,
+  `extension` VARCHAR(8) NULL,
+  `hreflFile` VARCHAR(2048) NOT NULL,
+  `isPage` TINYINT NOT NULL,
+  `screenshotPath` VARCHAR(2120) NOT NULL,
+  `idApplication` VARCHAR(2048) NOT NULL,
+   PRIMARY KEY (idPort),
+   FOREIGN KEY (idPort) REFERENCES tb_application(idPort) ON DELETE CASCADE
 );
 
 CREATE TABLE `db_data`.`tb_pastebin` (
