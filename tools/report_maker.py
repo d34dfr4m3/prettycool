@@ -3,7 +3,7 @@ import pymysql.cursors
 def createCon():
   connection = pymysql.connect(host='localhost',
                              user='prettycool',
-                             password='FRESHINSTALL',
+                             password='fuck',
                              db='db_data',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
@@ -30,7 +30,7 @@ def listDomains():
       getNum = execQuery(query)
       if getNum:
         totalHosts=getNum[0]['total']
-        print("[!] Domain: %s \n\tHosts Found: %s" %(domainName,totalHosts))
+        print("[!] Domain: %s Hosts Found: %s" %(domainName,totalHosts))
   
 def hostOnly(hostname):
   # Query a unique hostname in the database; 
@@ -78,20 +78,110 @@ def hostOnly(hostname):
     print("[+] {} Not found in database".format(domain))
   print("[!] Found {} records in database".format(count))
 
-
-
-  query = "select ipAddress, port, banner, protocol from tb_port where hostName = '{}'; ".format(hostname)
+def hostOnlyMail(target):
+  # Query a unique hostname in the database; 
+  #query ="select tb_host.hostName,tb_host.ipAddress,tb_port.port, tb_port.protocol,tb_port.banner from tb_host inner join tb_port where tb_host.domainName='{}' and tb_port.ipAddress = tb_host.ipAddress order by 1;".format(domain)
+  query ="select hostName,ipAddress,isp,link,org,latitude,longitude,last_update,shodan_last_update from tb_host where domainName='{}' and ipAddress != 'False' and hostName LIKE '%mail%' order by 1;".format(target)
   result = execQuery(query)
   if result:
-    print("[!] Hostname: %s" % hostname)
-    ipAddress=result[0]['ipAddress']
-    for records in range(len(result)):
-      port=result[records]['port']
-      protocol=result[records]['protocol']
-      banner=result[records]['banner']
-      print("\t\tPort: %s Protocol: %s \n\t\t\t\tBanner: %s" %(port,protocol,banner))
+    for host in range(len(result)):
+      hostName=result[host]['hostName']
+      ipAddress=result[host]['ipAddress']
+#      isp=result[host]['isp']
+#      link=result[host]['link']
+#      org=result[host]['org']
+#      asn=result[host]['asn']
+#      latitude=result[host]['latitude']
+#      longitude=result[host]['longitude']
+#      last_update=result[host]['last_update']
+#      shodan_last_update=result[host]['shodan_last_update']
+
+      print("[=] Hostname: {} ipAddress: {} ".format(hostName,ipAddress))
+#      print("\t\t[=] Link: {} ASN: {} Last Update: {}".format(link,asn,last_update))
+#      print("\t\t[=] Latitude: {} Longitude: {} Last Shodan update: {}".format(latitude,longitude,shodan_last_update))
+      query ="select port,protocol,banner,service from tb_port where hostName='{}' and ipAddress='{}' order by 1;".format(hostName,ipAddress)
+      resultPorts = execQuery(query)
+      if resultPorts:
+        for port in range(len(resultPorts)):
+          protocol=resultPorts[port]['protocol']
+          rport=resultPorts[port]['port']
+          banner=resultPorts[port]['banner']
+          service=resultPorts[port]['service']
+          if banner.decode() == 'Null':
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} Banner: None ".format(rport,protocol,service))
+          else:
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} \n\t\t\t\tBanner: ".format(rport,protocol,service))
+            line=''
+            for w in banner.decode():
+              line+=''.join(w)
+              if w == '\n':
+                lineprint='\t\t\t\t\t'+line
+                print(lineprint.replace('\r','').replace('\n',''))
+                line=''
+
+ #     count+=1
   else:
-    print("No records Found")
+    print("[+] {} Not found in database".format(domain))
+#  print("[!] Found {} records in database".format(count))
+
+def hostOnly(hostname):
+  # Query a unique hostname in the database; 
+  #query ="select tb_host.hostName,tb_host.ipAddress,tb_port.port, tb_port.protocol,tb_port.banner from tb_host inner join tb_port where tb_host.domainName='{}' and tb_port.ipAddress = tb_host.ipAddress order by 1;".format(domain)
+  query ="select hostName,ipAddress,isp,link,org,latitude,longitude,last_update,shodan_last_update from tb_host where domainName='{}' and ipAddress != 'False' order by 1;".format(domain)
+  result = execQuery(query)
+  if result:
+    for host in range(len(result)):
+      hostName=result[host]['hostName']
+      ipAddress=result[host]['ipAddress']
+      isp=result[host]['isp']
+      link=result[host]['link']
+      org=result[host]['org']
+      asn=result[host]['asn']
+      latitude=result[host]['latitude']
+      longitude=result[host]['longitude']
+      last_update=result[host]['last_update']
+      shodan_last_update=result[host]['shodan_last_update']
+
+      print("[=] Hostname: {} ipAddress: {} ISP: {} Organization: {}".format(hostName,ipAddress,isp,org))
+      print("\t\t[=] Link: {} ASN: {} Last Update: {}".format(link,asn,last_update))
+      print("\t\t[=] Latitude: {} Longitude: {} Last Shodan update: {}".format(latitude,longitude,shodan_last_update))
+      query ="select port,protocol,banner,service from tb_port where hostName='{}' and ipAddress='{}' order by 1;".format(hostName,ipAddress)
+      resultPorts = execQuery(query)
+      if resultPorts:
+        for port in range(len(resultPorts)):
+          protocol=resultPorts[port]['protocol']
+          rport=resultPorts[port]['port']
+          banner=resultPorts[port]['banner']
+          service=resultPorts[port]['service']
+          if banner.decode() == 'Null':
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} Banner: None ".format(rport,protocol,service))
+          else:
+            print("\t\tPort: {} STATUS OPEN Protocol: {} Service: {} \n\t\t\t\tBanner: ".format(rport,protocol,service))
+            line=''
+            for w in banner.decode():
+              line+=''.join(w)
+              if w == '\n':
+                lineprint='\t\t\t\t\t'+line
+                print(lineprint.replace('\r','').replace('\n',''))
+                line=''
+
+      count+=1
+  else:
+    print("[+] {} Not found in database".format(domain))
+  print("[!] Found {} records in database".format(count))
+
+  #query = "select ipAddress, port, banner, protocol from tb_port where hostName = '{}'; ".format(hostname)
+  #result = execQuery(query)
+  #if result:
+  #  print("[!] Hostname: %s" % hostname)
+  #  ipAddress=result[0]['ipAddress']
+  #  for records in range(len(result)):
+  #    port=result[records]['port']
+  #    protocol=result[records]['protocol']
+  #    banner=result[records]['banner']
+  #    print("\t\tPort: %s Protocol: %s \n\t\t\t\tBanner: %s" %(port,protocol,banner))
+  #else:
+#    print("No records Found")
 
 
 def hostsFromDomain(domain):
@@ -227,6 +317,8 @@ if __name__ == "__main__":
     hostsFromDomain(domain_name)
   elif opt=='host':
     hostOnly(domain_name)
+  elif opt=='hosts-from-domain-mail':
+    hostOnlyMail(domain_name)
   else:
     print("[!!] Invalid Option")
 

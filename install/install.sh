@@ -23,7 +23,28 @@ function installMasscan(){
 
 }
 
+function installNode(){
+  echo "[+] Installing node"
+  curl -sL https://deb.nodesource.com/setup_13.x | bash -
+  apt-get install -y nodejs
+  echo '[-] Loading enviroment for node'
+  . ~/.bashrc
+  NODE_VERSION=$(node --version)
+  echo "[*] Node instalation is done, version $NODE_VERSION"
+}
+
+function installOrq(){
+  echo "[+] Orquestrator goin up"
+  git clone https://github.com/g4rcez/prowler.git 
+  npm i -g ts-node yarn
+  cd PROJETO
+  #yarn
+  #ts-node src —url dominio.com
+}
+
 basic_packages
 configure_database
 requirementsPython
 installMasscan
+#installNode
+#installOrq

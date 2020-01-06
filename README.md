@@ -71,6 +71,135 @@ def createCon():
                              cursorclass=pymysql.cursors.DictCursor)
   return connection 
 ```
+### PrettyCool as SDK Interface
+Com a utilização do orquestrador, é necessário reescrever cada módulo como SDK, permitindo que o orquestrador dispare a interface de SDK( prettycool ) que irá disparar os SDK. Uma vez que o SDK conclua a tarefa, irá disparar uma requisição HTTP POST para o orquestrador para armazenar os dados. Uma vez que o orquestrador tenha os dados, ele irá processar e definir qual será o próximo SDK necessário para a execução. 
+
+
+##### Certsh
+SDK call example:
+```
+./prettycool.py --crtsh getHosts <domainName>
+./prettycool.py --crtsh getHosts twitter.com
+```
+
+Reply:
+```
+{
+ 'domainName': 'domainName', 
+ 'data': [
+  {'hostname': 'host.fqdn.com'}, 
+  {'hostname': 'host2.fqdn.com'}
+  ]
+}
+
+```
+##### Shodan
+Integração com o shodan permite obter informações de hostnames de um dominio, consultar informações de portas e banners, caso o hostname possua um IP válido. 
+
+###### Shodan query for ports/banners
+SDK Call example:
+```
+python3 prettycool --shodan ip "FQDN":"IPv4"
+python3 prettycool --shodan ip "www.host.com":"123.123.123.123"
+```
+
+Reply: 
+``
+hos
+```
+
+Draft
+```
+Modulo ip
+Dispara valores de portas e informações de aplicação, vai disparar diversas requisições POST.
+- host_update -> tb_hosts
+- tb_port
+- app_payload -> ApplicationContent
+{
+hostName: hostname ,
+ipAddress: 123.123.123.123, 
+ports:[{
+  port: port,
+  product: product,
+  banner: banner,
+  ops: ops,
+  isp: isp,
+  org: org,
+  asn: asn,
+  version: version,
+  link: link,
+  last_update:last_update
+  }],
+location:{
+  country_code: country_code,
+  longitude: longitude,
+  latitude: latitude
+},
+protocol:{
+ name:http
+ data:{
+   securitytxt: ,
+   title: ,
+   sitemap_hash: ,
+   robots: ,
+   html: ,
+   location_url: ,
+   server: ,
+   host_http:,
+   url_path:
+
+ }
+}
+}
+
+module
+port_service
+port_module
+
+
+
+HTTP Protocol
+protocol:{
+ name:http
+ data:{
+   securitytxt: ,
+   title: ,
+   sitemap_hash: ,
+   robots: ,
+   html: ,
+   location_url: ,
+   server: ,
+   host_http:,
+   url_path:
+
+ }
+}
+```
+
+###### Shodan Honeypot
+SDK call example:
+```
+python3 prettycool --shodan honeypot <IPv4>
+python3 prettycool --shodan honeypot 123.123.123.123
+
+``` 
+
+Reply data structure:
+```
+ {honeypot:[{'ipAddress': ipAddress, 'chance':chance}]}
+```
+
+###### Shodan query for hostnames from domain 
+SDK Call example:
+```
+python3 prettycool.py --shodan hostnames <domain_name>
+python3 prettycool.py --shodan hostnames instagram.com
+```
+
+Reply: 
+``
+{'domain': 'domain_name', 'hosts': [{'hostname': fqdn.example.com, 'ipAddress', 123.123.123.123, 'Last Seen': 2020-01-04T01:26:36.532802+00:00 }]} 
+```
 
 #### Data Sources:
 - Shodan: Used to get services at hosts. (https://api.shodan.io)
@@ -89,15 +218,13 @@ def createCon():
 - masscan
 
 ## ToDO
+- Segregar essa documentação, colocar a dos sdk em outro arquivo.
 - SHODAN Implementar busca por hosts de dominio("subdominios") no shodan /dns/domain/{domain}  https://api.shodan.io/dns/domain/{domain}?key={YOUR_API_KEY}
 - SANITIZAR TODOS OS INPUTS PRO BANCO DE DADOS, alguns valores estãop quebrando
-- Abusar de features do shodan.
 - Abusar de features do censys rtfm
-- Criar uma tabela para os arquivos do bucket da AWS
 - Problema no censys refrente à identificar portas ativas no servidor de proxy reverso da aplicação caso esteja em um serviço tipo AWS. 
 - Refatorar o código. 
 - Analisar estrutura dos dados e armazenamento.
-- Verificar doc do Shodan e trabalhar melhor os dados.
 - Criar uma pool de keys de API caso uma queime.
 - integrar zoomeye para descoberta de hosts e serviços.
 - Adotar multithread e alterar o fluxo de execução do programa visando melhorar o desempenho. [ Adotar processos]
@@ -124,6 +251,9 @@ def createCon():
 - Identificar qual a aplicação web, caso for um CMS, disparar um scanner ou não, especifico para o cms identificado.
 - Automatizar o reconhecimento dos buckets, verificar se possui READ/Write. 
 - Funções de atualização de dados no banco quando um novo scan acontecer para algum objeto que já está mapeado no banco
+- crtsh  https://pypi.org/project/certificate-search/
+- pastebin https://pypi.org/project/Pastebin/
+- Adicionar novas colunas no banco de dados referente à indice de honeypot
 
 
 #### Report
