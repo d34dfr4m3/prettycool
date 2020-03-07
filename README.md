@@ -124,7 +124,7 @@ def createCon():
 - Identificar qual a aplicação web, caso for um CMS, disparar um scanner ou não, especifico para o cms identificado.
 - Automatizar o reconhecimento dos buckets, verificar se possui READ/Write. 
 - Funções de atualização de dados no banco quando um novo scan acontecer para algum objeto que já está mapeado no banco
-
+- Search trello urls, some security configs in trello exposes the project to public. 
 
 #### Report
 - Listar dominios no banco
