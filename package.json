@@ -1,0 +1,31 @@
+{
+  "name": "prettycool",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@prisma/cli": "^2.0.0",
+    "@types/commander": "^2.12.2",
+    "@types/node": "^14.0.11",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.0.0-beta.8",
+    "@types/uuid": "^8.0.0",
+    "axios": "^0.19.2",
+    "censys.io": "^0.1.0",
+    "commander": "^5.1.0",
+    "dotenv": "^8.2.0",
+    "knex": "^0.21.1",
+    "linq-arrays": "^1.2.0",
+    "pg": "^8.2.1",
+    "uuid": "^8.1.0"
+  },
+  "scripts": {
+    "migrate": "npx prisma migrate save --name init --experimental && npx prisma migrate up --experimental",
+    "generate": "npx prisma generate"
+  }
+}

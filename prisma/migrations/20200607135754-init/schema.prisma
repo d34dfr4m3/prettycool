@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Target {
+  id           String         @default(uuid()) @id
+  companyName  String
+  domain       String
+  CompanyEmail CompanyEmail[]
+}
+
+model CompanyEmail {
+  id         String @default(uuid()) @id
+  email      String
+  serviceUrl String @unique
+
+  target   Target @relation(fields: [targetId], references: [id])
+  targetId String
+}

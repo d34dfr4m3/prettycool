@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:12345@localhost:5432/prettycool?schema=public"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model target {
+  id            String          @default(uuid()) @id
+  company_name  String
+  domain        String          @unique
+  company_email company_email[]
+}
+
+model company_email {
+  id          String @default(uuid()) @id
+  email       String
+  service_url String @unique
+  target      target @relation(fields: [target_id], references: [id])
+  target_id   String
+}
+
+model protocol {
+  id           String   @default(uuid()) @id
+  service_name String
+  port         Int
+  server       server[]
+}
+
+model server {
+  id          String     @default(uuid()) @id
+  ip          String
+  ip_version  String
+  location_id String
+  protocols   protocol[]
+  location    location   @relation(fields: [location_id], references: [id])
+}
+
+model location {
+  id           String   @default(uuid()) @id
+  country      String
+  longitude    Float
+  province     String?
+  city         String?
+  latitude     Float
+  timezone     String
+  continent    String
+  country_code String
+  server       server[]
+}
