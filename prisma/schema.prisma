@@ -73,4 +73,13 @@ model service {
   server      server   @relation(fields: [server_id], references: [id])
   target      target?  @relation(fields: [target_id], references: [id])
   target_id   String?
+  techs       tech[]
+}
+
+model tech {
+  id        String   @default(uuid()) @id
+  tech      String
+  tech_url  String
+  service   service? @relation(fields: [serviceId], references: [id])
+  serviceId String?
 }
