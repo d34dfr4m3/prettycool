@@ -8,7 +8,7 @@
    |  damage caused by this program                                              |
    +-----------------------------------------------------------------------------+
 ```
-## Passive Recon Tool 
+## Passive Recon Tool - Python Version
 This tool use few API's to grab data from domains.
 Passive scan
 Active scan
