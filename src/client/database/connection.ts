@@ -1,4 +1,6 @@
 import knex from "knex";
+import { PrismaClient } from '@prisma/client'
+export const prisma = new PrismaClient()
 
 export type Tables = {
     company_email: {

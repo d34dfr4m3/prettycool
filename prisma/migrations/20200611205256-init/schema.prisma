@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:12345@localhost:5432/prettycool?schema=public"
+  url = "***"
 }
 
 generator client {
@@ -16,8 +16,6 @@ model target {
   domain        String          @unique
   company_email company_email[]
   protocol      protocol[]
-  server        server[]
-  service       service[]
 }
 
 model company_email {
@@ -29,14 +27,13 @@ model company_email {
 }
 
 model protocol {
-  id           String    @default(uuid()) @id
+  id           String  @default(uuid()) @id
   service_name String
   port         Int
   server_id    String
-  server       server    @relation(fields: [server_id], references: [id])
-  target       target?   @relation(fields: [target_id], references: [id])
+  server       server  @relation(fields: [server_id], references: [id])
+  target       target? @relation(fields: [target_id], references: [id])
   target_id    String?
-  service      service[]
 }
 
 model server {
@@ -44,11 +41,8 @@ model server {
   ip          String     @unique
   ip_version  String
   location_id String
-  target      target     @relation(fields: [target_id], references: [id])
-  target_id   String
   protocols   protocol[]
   location    location   @relation(fields: [location_id], references: [id])
-  service     service[]
 }
 
 model location {
@@ -62,15 +56,4 @@ model location {
   continent    String
   country_code String
   server       server[]
-}
-
-model service {
-  id          String   @default(uuid()) @id
-  url         String   @unique
-  protocol    protocol @relation(fields: [protocol_id], references: [id])
-  protocol_id String
-  server_id   String
-  server      server   @relation(fields: [server_id], references: [id])
-  target      target?  @relation(fields: [target_id], references: [id])
-  target_id   String?
 }

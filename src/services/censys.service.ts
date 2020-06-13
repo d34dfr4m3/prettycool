@@ -1,10 +1,10 @@
+import { server } from "@prisma/client";
 import CensysIo from "censys.io";
-import Service from "./service";
-import IService from "./iservice";
-import { Tables } from "../client/database/connection";
-import { locationMap, serverMap, protocolMap, LocationQuery } from "../client/database/query";
+import { prisma } from "../client/database/connection";
+import { locationMap, protocolMap, ProtocolMap, serverMap } from "../client/database/query";
 import coordinates from "../helpers/coordinates";
-import uuid from "../helpers/uuid";
+import { censysProtocol, idProtocol } from "../helpers/protocol";
+import Service from "./service";
 require("dotenv").config();
 
 type ICensysIpv4 = ICensys<Ipv4>;
@@ -77,25 +77,63 @@ export const certificates: CensysQuery<Certificate> = async (query: string, page
     instance.search("certificates", { query, flatten: false, page }) as any;
 
 const Censys = {
-    insertLocation: async (location: Location) => {
-        const id = uuid();
+    insertLocation: async (location: Location, target: string) => {
         try {
-            const o = {
-                id,
-                city: location.city,
-                continent: location.continent,
-                country: location.registered_country,
-                country_code: location.registered_country_code,
-                latitude: location.latitude,
-                longitude: location.longitude,
-                province: location.province,
-                timezone: location.timezone,
-            };
-            await LocationQuery.insert(o);
+            const o = await prisma.location.create({
+                data: {
+                    city: location.city,
+                    continent: location.continent,
+                    country: location.registered_country,
+                    country_code: location.registered_country_code,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    province: location.province,
+                    timezone: location.timezone,
+                },
+            });
             return o;
         } catch (error) {
-            console.log("Error", id, error.message);
             return null;
+        }
+    },
+    upsertProtocols: async (x: Ipv4, server: server, protocols: ProtocolMap, targetId: string) => {
+        try {
+            const promises = x.protocols.map(async (p) => {
+                const [port, service] = censysProtocol(p);
+                const key = idProtocol(port, service, x.ip);
+                const id = protocols.get(key)?.id || "";
+                const protocol = {
+                    port,
+                    target: { connect: { id: targetId } },
+                    service_name: service,
+                    server: { connect: { id: server.id } },
+                };
+                const save = await prisma.protocol.upsert({
+                    create: protocol,
+                    update: protocol,
+                    where: { id },
+                });
+                protocols.set(key, save);
+                return save;
+            });
+            return Promise.all(promises);
+        } catch (error) {
+            return null;
+        }
+    },
+    upsertServerIpv4: async (x: Ipv4, idLocation: string, target: string) => {
+        try {
+            const data = {
+                ip: x.ip,
+                target: {
+                    connect: { id: target },
+                },
+                ip_version: "IPV4",
+                location: { connect: { id: idLocation } },
+            };
+            return prisma.server.upsert({ where: { ip: x.ip }, create: data, update: data });
+        } catch (error) {
+            throw error;
         }
     },
 };
@@ -111,32 +149,46 @@ const query = async <T>(domain: string, exec: CensysQuery<T>): Promise<ICensys<T
     return final;
 };
 
-export class CensysIpv4Service extends Service implements IService<ICensysIpv4> {
+export class CensysIpv4Service extends Service<ICensysIpv4> {
+    public enableFeature(): boolean {
+        return !!process.env.CENSYS_UID && !!process.env.CENSYS_SECRET;
+    }
+
     public async query(): Promise<ICensysIpv4> {
         return query(this.target.domain, search);
     }
 
     public async save(entity: ICensysIpv4): Promise<ICensysIpv4> {
-        const locations = await locationMap();
-        const protocols = await protocolMap();
-        const servers = await serverMap();
-        console.log(locations);
-        const inserts = entity.results.slice(0, 5).map(async (x) => {
-            const coords = coordinates.fromCensysResult(x);
-            let location;
-            if (!locations.has(coords)) {
-                console.log("HAS", locations.has(coords), coords);
-                location = (await Censys.insertLocation(x.location)) as any;
-                locations.set(coords, location);
-            } else {
-                location = locations.get(coords);
-            }
-        });
-        throw "";
+        try {
+            const locations = await locationMap();
+            const protocols = await protocolMap();
+            const servers = await serverMap();
+            const inserts = entity.results.map(async (x) => {
+                const coords = coordinates.fromCensysResult(x);
+                let location;
+                if (!locations.has(coords)) {
+                    location = (await Censys.insertLocation(x.location, this.target.id)) as any;
+                    locations.set(coords, location);
+                } else {
+                    location = locations.get(coords);
+                }
+                const save = await Censys.upsertServerIpv4(x, location.id, this.target.id);
+                servers.set(save?.ip!, save as any);
+                await Censys.upsertProtocols(x, save, protocols, this.target.id);
+            });
+            await Promise.all(inserts);
+        } catch (error) {
+            throw error;
+        } finally {
+            return entity;
+        }
     }
 }
 
-export class CensysSitesService extends Service implements IService<ICensysSites> {
+export class CensysSitesService extends Service<ICensysSites> {
+    enableFeature(): boolean {
+        throw new Error("Method not implemented.");
+    }
     public async query(): Promise<ICensysSites> {
         return query(this.target.domain, websites);
     }
@@ -146,7 +198,10 @@ export class CensysSitesService extends Service implements IService<ICensysSites
     }
 }
 
-export class CensysCertificatesService extends Service implements IService<ICensysCertificates> {
+export class CensysCertificatesService extends Service<ICensysCertificates> {
+    enableFeature(): boolean {
+        throw new Error("Method not implemented.");
+    }
     public async query(): Promise<ICensysCertificates> {
         return query(this.target.domain, certificates);
     }

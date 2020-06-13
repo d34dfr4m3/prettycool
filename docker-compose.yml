@@ -28,6 +28,8 @@ services:
     networks:
       - network
     restart: always
+    depends_on: 
+      - database
 
 networks:
   network:

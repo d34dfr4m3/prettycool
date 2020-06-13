@@ -1,0 +1,31 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "protocol",
+      "field": "target_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "protocol",
+      "field": "targetId"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "protocol",
+          "field": "target"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[target_id]"
+    }
+  ]
+}

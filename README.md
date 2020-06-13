@@ -26,21 +26,21 @@ For now, only database is ported to docker. In the future, all dependencies will
 
 - [x] Hunter Scan
 - [x] Censys Scan
-- [] CLI Logging
-- [] Domain Scan
-- [] Enumerate server services/protocols
-- [] Graphql hook using [graphql-hook](https://github.com/g4rcez/graphql-hook)
-- [] Print domain pages
-- [] Telegram notifications
-- [] Web interface for monitoring
-- [] Web tech discovery
-- [] Whois information
+- [ ] CLI Logging
+- [ ] Domain Scan
+- [ ] Enumerate server services/protocols
+- [ ] Graphql hook using [graphql-hook](https://github.com/g4rcez/graphql-hook)
+- [ ] Print domain pages
+- [ ] Telegram notifications
+- [ ] Web interface for monitoring
+- [ ] Web tech discovery
+- [ ] Whois information
 
 
 ### ToDo
 
-- [] Express server
-- [] WebPage
-- [] Integrate graphql hook with express server
-- [] Configure monorepo 
-- [] Port dependencies to docker
+- [ ] Express server
+- [ ] WebPage
+- [ ] Integrate graphql hook with express server
+- [ ] Configure monorepo 
+- [ ] Port dependencies to docker

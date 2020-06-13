@@ -38,7 +38,11 @@ const getUrl = (domain: string, offset = 0) => {
     return url;
 };
 
-export class HunterService extends Service implements IService<IHunter> {
+export class HunterService extends Service<IHunter> {
+    public enableFeature(): boolean {
+        return !!dotenv.HUNTER_SECRET;
+    }
+    
     public async save(entity: IHunter): Promise<IHunter> {
         const items = [] as Tables["company_email"][];
         entity.emails.forEach((email) =>
