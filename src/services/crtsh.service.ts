@@ -1,4 +1,4 @@
-import Hermes, { HttpHeaders } from "hermes-http";
+import axios from "axios";
 import Linq from "linq-arrays";
 import { userAgents } from "../helpers/ua";
 import Service from "./service";
@@ -16,12 +16,6 @@ export type ICrtSh = {
 
 const url = new URL("https://crt.sh/");
 url.searchParams.append("output", "json");
-
-const headers = new HttpHeaders();
-headers.addHeader("User-Agent", Linq.Random(userAgents));
-
-const hermes = new Hermes({ headers });
-
 export class CrtShService extends Service<string[]> {
     public enableFeature(): boolean {
         return Boolean(dotenv.CRTSH).valueOf();
@@ -29,10 +23,8 @@ export class CrtShService extends Service<string[]> {
 
     public async query(): Promise<string[]> {
         try {
-            url.searchParams.append("q", this.target.domain);
-            const { data } = await hermes.get<ICrtSh>(url.href, {
-                timeout: 40000,
-            });
+            url.searchParams.set("q", this.target.domain);
+            const { data } = await axios.get<ICrtSh>(url.href, { timeout: 40000 });
             const items: string[] = [];
             data.forEach((crt) => {
                 const domain = crt.name_value.split("\n").filter(Boolean);

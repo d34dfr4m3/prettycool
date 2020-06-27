@@ -1,6 +1,8 @@
-import Service from "./service";
-import Hermes from "hermes-http";
-const hermes = new Hermes();
+import axios from "axios";
+import Linq from "linq-arrays";
+import cheerio from "cheerio";
+import { Domain } from "../domain/domain";
+import { userAgents } from "../helpers/ua";
 
 type IBuiltWith = { title: string; site: string };
 
@@ -17,7 +19,8 @@ const getQuery = (n: number) =>
     `#mainForm > div:nth-child(3) > div > div.col-md-8.pr-1.pl-4 > div:nth-child(${n}) > div > div > div > h2 > a`;
 
 const getServiceSite = async ([href, title]: [string, string], services: IBuiltWith[]) => {
-    const response = await hermes.get<string>(href);
+    const response = await axios.get<string>(href);
+    console.log("ANALYZE SERVICE", href, title);
     const $ = cheerio.load(response.data);
     $(
         "#mainForm > div.container > div > div.col-lg-8 > div:nth-child(4) > div > div:nth-child(1) > div.col-9.col-md-10 > p.xsmall.mb-2 > a",
@@ -27,11 +30,17 @@ const getServiceSite = async ([href, title]: [string, string], services: IBuiltW
     });
 };
 
-export class BuiltWithService extends Service<IBuiltWith[]> {
-    public async query(): Promise<IBuiltWith[]> {
-        const response = await hermes.get<string>(`https://builtwith.com/${this.target.domain}`);
+const targetAnalyze = async (domain: string) => {
+    const services: IBuiltWith[] = [];
+    try {
+        const replaceDomain = domain.trim().replace(/^w{3}./i, "");
+        console.log(replaceDomain);
+        const url = `https://builtwith.com/${replaceDomain}`;
+        const response = await axios.get<string>(url, { httpAgent: Linq.Random(userAgents) });
+        console.log("RESPONSE", url);
         const $ = cheerio.load(response.data);
         const trackingTech: [string, string][] = querySelectorAll($, getQuery(1));
+        console.log("TECH", trackingTech);
         const widgets: [string, string][] = querySelectorAll($, getQuery(2));
         const languages: [string, string][] = querySelectorAll($, getQuery(3));
         const eCommerces: [string, string][] = querySelectorAll($, getQuery(4));
@@ -50,7 +59,6 @@ export class BuiltWithService extends Service<IBuiltWith[]> {
         const sslCertificates: [string, string][] = querySelectorAll($, getQuery(17));
         const webServers: [string, string][] = querySelectorAll($, getQuery(18));
         const syndicationTechniques: [string, string][] = querySelectorAll($, getQuery(19));
-        const services: IBuiltWith[] = [];
         const awaitedArray = [
             trackingTech,
             widgets,
@@ -73,7 +81,22 @@ export class BuiltWithService extends Service<IBuiltWith[]> {
             syndicationTechniques,
         ].map(async (service) => Promise.all(service.map(async (x) => getServiceSite(x, services))));
         await Promise.all(awaitedArray);
-        return services;
+    } catch (error) {
+        console.log(error);
+    }
+    return services;
+};
+
+export class BuiltWith {
+    public static async query(domains: Domain[]) {
+        const items = await Promise.all(
+            domains.slice(0, 1).map(async (x) => {
+                const response = await targetAnalyze(x.site);
+                console.log(response);
+                return { site: x, analytics: response };
+            }),
+        );
+        return Linq.Unique(items, "site");
     }
 
     save(entity: IBuiltWith[]): Promise<IBuiltWith[]> {

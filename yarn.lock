@@ -945,10 +945,10 @@ has-yarn@^2.1.0:
   resolved "https://registry.yarnpkg.com/has-yarn/-/has-yarn-2.1.0.tgz#137e11354a7b5bf11aa5cb649cf0c6f3ff2b2e77"
   integrity sha512-UqBRqi4ju7T+TqGNdqAO0PaSVGsDGJUBQvk9eUWNGRY1CFGDzYhLWoM7JQEemnlvVcv/YEmc2wNW8BC24EnUsw==
 
-hermes-http@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/hermes-http/-/hermes-http-2.2.3.tgz#c8c67ca829d1d0a330aef2b4b5677f9dc02da853"
-  integrity sha512-er5lVkqaZJunwoLSHZLbIoe82CKY3YCPdua/tjF+pkZsR0yQtcbMQQGC2ygxvEku/v6IjzTYj3Y0IzP2p4ZHCA==
+hermes-http@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/hermes-http/-/hermes-http-2.2.6.tgz#0d4837afc7c80d36c25251b8c50c52bf6b6560c9"
+  integrity sha512-furU0Vw9Fy0kBy6nv1nary6J1hQ8hRlyZhEtKS+5zEQTXLWpJPE7+PCdSJS18wE1MIr9IVwMK6tMaYB1GXsZKw==
   optionalDependencies:
     abort-controller "^3.0.0"
     node-fetch "^2.6.0"

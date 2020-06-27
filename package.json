@@ -21,7 +21,7 @@
     "cheerio": "^1.0.0-rc.3",
     "commander": "^5.1.0",
     "dotenv": "^8.2.0",
-    "hermes-http": "^2.2.3",
+    "hermes-http": "^2.2.6",
     "knex": "^0.21.1",
     "linq-arrays": "^1.2.1",
     "pg": "^8.2.1",
